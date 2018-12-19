@@ -1,15 +1,28 @@
 'use strict';
 
-var express     = require('express');
-var bodyParser  = require('body-parser');
-var expect      = require('chai').expect;
-var cors        = require('cors');
+const bodyParser  = require('body-parser');
+const cors        = require('cors');
+const expect      = require('chai').expect;
+const express     = require('express');
+const helmet      = require('helmet');
 
-var apiRoutes         = require('./routes/api.js');
-var fccTestingRoutes  = require('./routes/fcctesting.js');
-var runner            = require('./test-runner');
+const apiRoutes         = require('./routes/api.js');
+const fccTestingRoutes  = require('./routes/fcctesting.js');
+const runner            = require('./test-runner');
 
-var app = express();
+const app = express();
+app.use(helmet({
+  framegaurd: { // configure
+    action: 'deny',
+  },
+  contentSercurityPolicy: { // enable and configure
+    directives: {
+      defaultSrc: ["self"],
+      styleSrc: ['style.com'],
+    }
+  },
+  dnsPrefetchControl: false // disable
+}));
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
